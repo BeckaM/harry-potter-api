@@ -1,14 +1,12 @@
 (ns harry-potter-api.handler
   (:require [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
-            [schema.core :as s]
-            [ring.middleware.cors :refer [wrap-cors]]))
+            [ring.middleware.cors :refer [wrap-cors]]
+            [ring.swagger.json-schema :as json-schema]
+            [harry-potter-api.models.character :refer :all]
+            [harry-potter-api.services.character :refer :all]))
 
-(def characters
-  (atom [{:name "Ginny"}]))
-
-(s/defschema HarryPotterCharacter
-  {:name s/Str})
+(defmethod json-schema/convert-class org.bson.types.ObjectId [e _] {:type "string" :pattern (str e)})
 
 (def app
   (api
@@ -22,18 +20,45 @@
     (context "/api" []
       :tags ["api"]
 
-      (GET "/characters" []
-        :return [HarryPotterCharacter]
-        :summary "Gets a list of characters"
-        (ok @characters))
+      (context "/characters" []
+        :tags ["characters"]
 
-      (POST "/characters" []
-        :return HarryPotterCharacter
-        :summary "Creates a new character"
-        :body [character HarryPotterCharacter]
-        (do
-          (swap! characters conj character)
-          (ok character))))))
+        (routes
+          (GET "/" []
+            :return [HarryPotterCharacter]
+            :query-params [key :- String]
+            :summary "gets a list of characters"
+            (ok (get-all-characters key)))
+
+          (GET "/:id" []
+            :return HarryPotterCharacter
+            :path-params [id :- String]
+            :query-params [key :- String]
+            :summary "gets character by id"
+            (ok (get-character-by-id id key)))
+
+          (POST "/" []
+            :return HarryPotterCharacter
+            :query-params [key :- String]
+            :body [character NewHarryPotterCharacter]
+            :summary "create a character"
+            (ok (create-character character key)))
+
+          (PUT "/:id" []
+            :return HarryPotterCharacter
+            :path-params [id :- String]
+            :query-params [key :- String]
+            :body [character NewHarryPotterCharacter]
+            :summary "update a character"
+            (ok (update-character id character key)))
+
+          (PATCH "/:id" []
+            :return HarryPotterCharacter
+            :path-params [id :- String]
+            :query-params [key :- String]
+            :body [character OptionalHarryPotterCharacter]
+            :summary "patch update a character"
+            (update-character id character key)))))))
 
 (def app-with-middleware
   (-> app
