@@ -24,3 +24,6 @@
   (let [character (merge new-character {:key key})]
     (mc/update db character-collection {:key key :_id (ObjectId. id)} {$set character})
     (get-character-by-id id key)))
+
+(defn delete-character [id]
+  (mc/remove-by-id db character-collection (ObjectId. id)))

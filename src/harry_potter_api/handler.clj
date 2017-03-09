@@ -58,7 +58,13 @@
             :query-params [key :- String]
             :body [character OptionalHarryPotterCharacter]
             :summary "patch update a character"
-            (ok (update-character id character key))))))))
+            (ok (update-character id character key)))
+
+          (DELETE "/:id" []
+            :path-params [id :- String]
+            :query-params [key :- String]
+            :summary "delete a character"
+            (no-content)))))))
 
 (def app-with-middleware
   (-> app
