@@ -58,7 +58,7 @@
             :query-params [key :- String]
             :body [character OptionalHarryPotterCharacter]
             :summary "patch update a character"
-            (update-character id character key)))))))
+            (ok (update-character id character key))))))))
 
 (def app-with-middleware
   (-> app
