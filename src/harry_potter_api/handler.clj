@@ -35,7 +35,9 @@
             :path-params [id :- String]
             :query-params [key :- String]
             :summary "gets character by id"
-            (ok (get-character-by-id id key)))
+            (if-let [character (get-character-by-id id key)]
+              (ok character)
+              (not-found)))
 
           (POST "/" []
             :return HarryPotterCharacter
@@ -50,7 +52,9 @@
             :query-params [key :- String]
             :body [character NewHarryPotterCharacter]
             :summary "update a character"
-            (ok (update-character id character key)))
+            (if-let [character (update-character id character key)]
+              (ok character)
+              (not-found)))
 
           (PATCH "/:id" []
             :return HarryPotterCharacter
@@ -58,13 +62,17 @@
             :query-params [key :- String]
             :body [character OptionalHarryPotterCharacter]
             :summary "patch update a character"
-            (ok (update-character id character key)))
+            (if-let [character (update-character id character key)]
+              (ok character)
+              (not-found)))
 
           (DELETE "/:id" []
             :path-params [id :- String]
             :query-params [key :- String]
             :summary "delete a character"
-            (no-content)))))))
+            (if (delete-character id)
+              (no-content)
+              (not-found))))))))
 
 (def app-with-middleware
   (-> app
