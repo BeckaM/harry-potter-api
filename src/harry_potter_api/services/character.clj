@@ -25,7 +25,6 @@
     (mc/update db character-collection {:key key :_id (ObjectId. id)} {$set character})
     (get-character-by-id id key)))
 
-(defn delete-character [id]
-  (let [result (mc/remove-by-id db character-collection (ObjectId. id))
-        rows-affected (.getN result)]
-    (> 0 rows-affected)))
+(defn delete-character [id key]
+  (when-let [exists? (get-character-by-id id key)]
+    (mc/remove db character-collection {:key key :_id (ObjectId. id)})))

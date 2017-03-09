@@ -70,7 +70,7 @@
             :path-params [id :- String]
             :query-params [key :- String]
             :summary "delete a character"
-            (if (delete-character id)
+            (if (delete-character id key)
               (no-content)
               (not-found))))))))
 
