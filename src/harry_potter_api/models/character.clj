@@ -5,7 +5,12 @@
 
 (s/defschema HarryPotterCharacter
   {:_id org.bson.types.ObjectId
-   :name s/Str})
+   :name s/Str
+   :species s/Str
+   (s/optional-key :wand) s/Str
+   (s/optional-key :profession) s/Str
+   (s/optional-key :description) s/Str
+   (s/optional-key :death-eater) s/Bool})
 
 (s/defschema NewHarryPotterCharacter
   (st/dissoc HarryPotterCharacter :_id))
