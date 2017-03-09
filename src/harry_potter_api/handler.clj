@@ -39,12 +39,13 @@
               (ok character)
               (not-found)))
 
-          (POST "/" []
+          (POST "/" request
             :return HarryPotterCharacter
             :query-params [key :- String]
             :body [character NewHarryPotterCharacter]
             :summary "create a character"
-            (ok (create-character character key)))
+            (let [character (create-character character key)]
+              (created (str (:uri request) "/" (:_id character)) character)))
 
           (PUT "/:id" []
             :return HarryPotterCharacter
