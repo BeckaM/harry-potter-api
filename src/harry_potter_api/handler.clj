@@ -14,7 +14,7 @@
      {:ui "/"
       :spec "/swagger.json"
       :data {:info {:title "Harry Potter API"
-                    :description "Simple API example."}
+                    :description "RESTful API example."}
              :tags [{:name "characters", :description "Harry Potter Characters"}]}}}
 
     (context "/api" []
