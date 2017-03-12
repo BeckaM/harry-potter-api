@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    working_directory: /root/harry-potter-api
+    docker:
+      - image: clojure:lein-2.7.1
+    steps:
+      - checkout
+      - run: lein ring uberjar
+      - store_artifacts:
+          path: /root/harry-potter-api/target/server.jar
+          destination: build
